@@ -8,7 +8,7 @@
 运行服务端
 
 ```bash
-python main.py
+python -m uvicorn main:app --reload
 ```
 
 我们建议您再运行我们的检查工具以确保您的环境。
@@ -20,7 +20,7 @@ python utils/env_check.py
 如果您需要一份检测报告，请您执行
 
 ```bash
-python utils/env_check.py --generate-report
+python utils/env_check.py --save
 ```
 
 ## 问题反馈
