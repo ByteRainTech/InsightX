@@ -8,6 +8,7 @@
 |`/view/`|检视已挂载模型|
 |`/view/{}`|获取模型结构|
 |`/to/dtype/{}/{}`|dtype转换|
+|`/to/device/{}/{}`|设备转换|
 
 ## 部署
 您需要首先安装引用包以确保您可以运行InsightX Server
