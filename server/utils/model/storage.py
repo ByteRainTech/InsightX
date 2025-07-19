@@ -1,6 +1,10 @@
+import torch
 import re
 from fastapi import APIRouter, Depends
 from . import cache
+import logging
+logger = logging.getLogger("uvicorn")
+logging.basicConfig(level=logging.DEBUG)
 """
 模型共享区
 """
@@ -17,35 +21,60 @@ def share_model(name: str, model, source="torch"):
         "model": model,
         "source": source
         })
+def to_device(name: str, device: str):
+    global shared_models
+    for shared_model in shared_models:
+        if shared_model["name"] == name:
+            match shared_model["source"]:
+                case "torch":
+                    try:
+                        device = torch.device(device)
+                        shared_model["model"] = shared_model["model"].to(device)
+                        if next(shared_model["model"].parameters()).device!=device:
+                            logger.error(f"{name} -> 设备移动后无法验证。")
+                            return False
+                        if cache.get(f"model_{name}_structure")!=None:
+                            structure = cache.get(f"model_{name}_structure") # 获取已有结构
+                            structure["device"] = str(device) # 更新dtype缓存
+                            cache.store(f"model_{name}_structure", structure) # 更新结构
+                        logger.info(f"{name} -> 设备已移动至 {str(device)}")
+                        return True
+                    except Exception as e:
+                        logger.error(f"{name} -> 设备转换出现问题 : {e}")
+                        return False
 def to_dtype(name: str, dtype: str):
     global shared_models
     for shared_model in shared_models:
         if shared_model["name"] == name:
-            if shared_model["source"] == "torch":
-                import torch
-                try:
-                    match dtype:
-                        case "float16":
-                            shared_model["model"].to(torch.float16)
-                        case "float32":
-                            shared_model["model"].to(torch.float32)
-                        case "float64":
-                            shared_model["model"].to(torch.float64)
-                        case "bfloat16":
-                            shared_model["model"].to(torch.bfloat16)
-                        case _: # 默认返回 None，代表未转换
-                            return None
-                    if str(next(shared_model["model"].parameters()).dtype) == f"torch.{dtype}":
-                        if cache.get(f"model_{name}_structure")!=None:
-                            structure = cache.get(f"model_{name}_structure") # 获取已有结构
-                            structure["dtype"] = f"torch.{dtype}" # 更新dtype缓存
-                            cache.store(f"model_{name}_structure", structure) # 更新结构
-                        return True # dtype更新成功
-                    else:
+            match shared_model["source"]:
+                # Torch方式
+                case "torch":
+                    import torch
+                    try:
+                        match dtype:
+                            case "float16":
+                                shared_model["model"].to(torch.float16)
+                            case "float32":
+                                shared_model["model"].to(torch.float32)
+                            case "float64":
+                                shared_model["model"].to(torch.float64)
+                            case "bfloat16":
+                                shared_model["model"].to(torch.bfloat16)
+                            case _: # 默认返回 None，代表未转换
+                                return None
+                        if str(next(shared_model["model"].parameters()).dtype) == f"torch.{dtype}":
+                            if cache.get(f"model_{name}_structure")!=None:
+                                structure = cache.get(f"model_{name}_structure") # 获取已有结构
+                                structure["dtype"] = f"torch.{dtype}" # 更新dtype缓存
+                                cache.store(f"model_{name}_structure", structure) # 更新结构
+                            return True # dtype更新成功
+                        else:
+                            return False # dtype未更新
+                    except Exception as e:
+                        logger.error(f"{name} -> dtype转换出现问题 : {e}")
                         return False # dtype未更新
-                except Exception as e:
-                    print(f"{name}::dtype转换出现问题 : {e}")
-                    return False # dtype未更新
+                case _:
+                    return False
 def model_exists(name: str):
     global shared_models
     if 'shared_models' not in globals():
