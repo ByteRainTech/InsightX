@@ -1,6 +1,14 @@
 # InsightX Server
 > 为大数据工程而打造的便捷式工具箱
 
+## 支持的功能
+|API|功能|
+|--|--|
+|`/mount/`|模型挂载|
+|`/view/`|检视已挂载模型|
+|`/view/{}`|获取模型结构|
+|`/to/dtype/{}/{}`|dtype转换|
+
 ## 部署
 您需要首先安装引用包以确保您可以运行InsightX Server
 `pip install -r requirements.txt`
