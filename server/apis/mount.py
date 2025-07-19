@@ -9,6 +9,9 @@ import torch
 import importlib.util
 import json
 import sys
+import logging
+logger = logging.getLogger("uvicorn")
+
 router = APIRouter()
 
 """
@@ -23,14 +26,19 @@ def mount(source: str, name: str, path: str = None, model_path: str = None, mode
     match source: # 挂载方法
         case "torch": # TorchLoad
             if model_exists(name):
+                logger.error(f"{name} -> 模型名已被占用，请取消挂载/修改名。")
                 return {"status": "error", "msg": "模型名已被占用，请取消挂载/修改名。"}
             if model_path==None:
+                logger.error(f"{name} -> 请指定一个模型网络路径: model_path")
                 return {"status": "error", "msg": "请指定一个模型网络路径: model_path"}
             if model_class==None:
+                logger.error(f"{name} -> 请指定一个模型入口: model_class")
                 return {"status": "error", "msg": "请指定一个模型入口: model_class"}
             if path==None:
+                logger.error(f"{name} -> 目标文件不存在，请设置参数 path。")
                 return {"status": "error", "msg": "目标文件不存在，请设置参数 path。"}
             if not os.path.exists(path):
+                logger.error(f"{name} -> 模型文件不存在。")
                 return {"status": "error", "msg": "模型文件不存在。"}
             preloaded = torch.load(path)
             args = json.loads(args)
@@ -41,7 +49,9 @@ def mount(source: str, name: str, path: str = None, model_path: str = None, mode
             model = model_class(**args)
             model.load_state_dict(preloaded)
             share_model(name=name,model=model)
+            logger.info(f"{name} -> 已挂载。")
             return {"status": "success", "msg": "ok!"}
-    return {"message": f""}
+    logger.error(f"{name} -> 不支持的源: {source}")
+    return {"status": f"error", "msg": "暂不支持该源。"}
 def register_routes(app):
     app.include_router(router)
