@@ -2,6 +2,7 @@
 > 为大数据工程而打造的便捷式工具箱
 
 ## 支持的功能
+> 若要查看API，您可以打开<a href="https://insightx.apifox.cn/">ApiFox</a>查看我们的API。
 |API|功能|
 |--|--|
 |`/mount/`|模型挂载|
