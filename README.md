@@ -1,7 +1,12 @@
 <img src="https://raw.githubusercontent.com/ByteRainTech/InsightX/refs/heads/main/intro.png">
 
 # InsightX
-用于大数据工程的便捷式工具
+<p align="center">
+    <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-deepskyblue.svg"></a>
+    <a href="#"><img src="https://img.shields.io/badge/python-3.10%2C%203.11%2C%203.12-green.svg"></a>
+    <a href="#"><img src="https://img.shields.io/badge/device-cpu gpu-yellow.svg"></a>
+</p>
+<p align="center">用于大数据工程的便捷式工具</p>
 
 # 支持功能
 > 👏 告别重加载，`模型挂载` 为您跳过训练代码 Deving 的模型重复加载。
