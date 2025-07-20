@@ -32,7 +32,7 @@ def mount(
     name: str,
     path: str | None = None,
     model_path: str | None = None,
-    model_class_name: str | None = None,
+    model_class: str | None = None,
     args: str = "{}",
 ):
     match source:  # 挂载方法
@@ -43,7 +43,7 @@ def mount(
             if model_path is None:
                 logger.error(f"{name} -> 请指定一个模型网络路径: model_path")
                 return {"status": "error", "msg": "请指定一个模型网络路径: model_path"}
-            if model_class_name is None:
+            if model_class is None:
                 logger.error(f"{name} -> 请指定一个模型入口: model_class")
                 return {"status": "error", "msg": "请指定一个模型入口: model_class"}
             if path is None:
@@ -61,7 +61,7 @@ def mount(
             module = importlib.util.module_from_spec(spec)
             assert spec.loader is not None, "Loader is None!"
             spec.loader.exec_module(module)
-            model_class: type = getattr(module, model_class_name)
+            model_class: type = getattr(module, model_class)
             model = model_class(**arg_dict)
             model.load_state_dict(preloaded)
             share_model(name=name, model=model)
