@@ -117,10 +117,8 @@ def model_exists(name: str):
     return SharedModelRepository().exist(name)
 
 
-def get_model_list():
-    return [
-        model.model_dump() for _, model in SharedModelRepository().shared_models.items()
-    ]
+def get_model_list() -> list[str]:
+    return list(SharedModelRepository.shared_models.keys())
 
 
 """
