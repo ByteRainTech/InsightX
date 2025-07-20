@@ -1,0 +1,45 @@
+[project]
+name = "server"
+version = "0.1.0"
+description = "为大数据工程而打造的便捷式工具箱"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.116.1",
+    "numpy>=2.2.6",
+    "pydantic>=2.11.7",
+    "torch>=2.7.1",
+    "typing-extensions>=4.14.1",
+    "uvicorn>=0.35.0",
+]
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "F",     # Pyflakes
+    "W",     # pycodestyle warnings
+    "E",     # pycodestyle errors
+    "UP",    # pyupgrade
+    "ASYNC", # flake8-async
+    "C4",    # flake8-comprehensions
+    "T10",   # flake8-debugger
+    "PYI",   # flake8-pyi
+    "PT",    # flake8-pytest-style
+    "Q",     # flake8-quotes
+    "RUF",   # Ruff-specific rules
+    "I",     # isort
+    "PERF",  # pylint-performance
+]
+ignore = [
+    "E402",   # module-import-not-at-top-of-file
+    "E501",   # line-too-long
+    "UP037",  # quoted-annotation
+    "RUF001", # ambiguous-unicode-character-string
+    "RUF002", # ambiguous-unicode-character-docstring
+    "RUF003", # ambiguous-unicode-character-comment
+]
+
+[tool.pyright]
+typeCheckingMode = "standard"

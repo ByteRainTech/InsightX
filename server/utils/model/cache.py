@@ -1,15 +1,19 @@
 """
 缓存
 """
-def store(key, value):
-    global caches
-    if 'caches' not in globals():
-        caches = {key: value}
-    else:
-        caches["key"] = value
-    return True # 成功!
-def get(key):
-    global caches
-    if 'caches' not in globals():
-        return None
-    return caches[key]
+
+from threading import RLock
+from typing import Any
+
+_cache_dict: dict[str, Any] = {}
+_lock: RLock = RLock()
+
+
+def store(key: str, value: Any):
+    with _lock:
+        _cache_dict[key] = value
+
+
+def get(key: str, default=None):
+    with _lock:
+        return _cache_dict.get(key, default)
