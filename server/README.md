@@ -15,12 +15,19 @@
 | `/to/device/{}/{}` | 设备转换       |
 
 ## 部署
-
-我们使用了现代化的 `UV` 来进行 InsightX Server 的包管理。
+您可以使用下列命令进行安装部署
+#### 环境安装
+```bash
+pip install -r requirements.txt
+```
+#### 运行服务端
+```bash
+uvicorn main:app --reload
+```
+## 在虚拟环境部署
+您可以使用现代化的 `UV` 来进行 InsightX Server 的包管理。
 使用`uv venv`创建虚拟环境
-
-运行服务端
-
+#### 运行服务端
 ```bash
 uv run uvicorn main:app --reload
 ```
@@ -28,6 +35,7 @@ uv run uvicorn main:app --reload
 ## 问题反馈
 
 我们支持您在 [Issues](https://github.com/ByteRainTech/InsightX/issues) 中询问有关此工具的问题。
+> 👏 欢迎PR
 
 ## 附言
 
