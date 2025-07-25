@@ -11,7 +11,7 @@ from typing import Any
 import torch
 from fastapi import APIRouter
 
-from utils.model.storage import model_exists, share_model
+from utils.model.storage import model_exists, mount_model
 
 logger = logging.getLogger("uvicorn")
 
@@ -32,7 +32,7 @@ def mount(
     name: str,
     path: str | None = None,
     model_path: str | None = None,
-    model_class: str | None = None,
+    model_class_name: str | None = None,
     args: str = "{}",
 ):
     match source:  # 挂载方法
@@ -43,7 +43,7 @@ def mount(
             if model_path is None:
                 logger.error(f"{name} -> 请指定一个模型网络路径: model_path")
                 return {"status": "error", "msg": "请指定一个模型网络路径: model_path"}
-            if model_class is None:
+            if model_class_name is None:
                 logger.error(f"{name} -> 请指定一个模型入口: model_class")
                 return {"status": "error", "msg": "请指定一个模型入口: model_class"}
             if path is None:
@@ -61,10 +61,10 @@ def mount(
             module = importlib.util.module_from_spec(spec)
             assert spec.loader is not None, "Loader is None!"
             spec.loader.exec_module(module)
-            model_class: type = getattr(module, model_class)
+            model_class: type = getattr(module, model_class_name)
             model = model_class(**arg_dict)
             model.load_state_dict(preloaded)
-            share_model(name=name, model=model)
+            mount_model(name=name, model=model, path=path)
             logger.info(f"{name} -> 已挂载。")
             return {"status": "success", "msg": "ok!"}
     logger.error(f"{name} -> 不支持的源: {source}")
