@@ -24,6 +24,12 @@
 |检索模型结构| `0.1`|
 |dtype 转移|`0.1`|
 
+## 工程师
+> 工程师的作笔
+
+- `大数据工程师` <a href="https://github.com/aztice/">@aztice</a>
+- `语法检索修正` <a href="https://github.com/johnRichard4096/">@johnRichard4096</a>
+
 ## 部署
 
 本项目分为 `/server/` 以及 `/client/` 两个部分，如您只需要 API 接口，仅部署 `/server/`即可。
